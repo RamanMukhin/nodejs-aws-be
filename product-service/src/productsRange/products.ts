@@ -1,51 +1,65 @@
 export const products = [
   {
-    count: 1,
-    description: "Short Product Description1",
     id: "1111ec4b-b10c-48c5-9345-fc73c48a80a2",
+    description: "Short Product Description1",
+    title: "Rose",
+    sort: "avalansh",
+    height: 70,
+    count: 1,
     price: 1.1,
-    title: "FirstProduct"
   },
   {
-    count: 2,
-    description: "Short Product Description2",
     id: "2222ec4b-b10c-48c5-9345-fc73c48a80a2",
+    description: "Short Product Description2",
+    title: "Rose",
+    sort: "dzhumiliya",
+    height: 70,
+    count: 2,
     price: 2.2,
-    title: "SecondProduct"
   },
   {
-    count: 3,
-    description: "Short Product Description3",
     id: "3333ec4b-b10c-48c5-9345-fc73c48a80a2",
+    description: "Short Product Description3",
+    title: "Rose",
+    sort: "fiesta",
+    height: 70,
+    count: 3,
     price: 3.3,
-    title: "ThirdProduct"
   },
   {
-    count: 4,
-    description: "Short Product Description4",
     id: "4444ec4b-b10c-48c5-9345-fc73c48a80a2",
+    description: "Short Product Description4",
+    title: "Rose",
+    sort: "kenya",
+    height: 70,
+    count: 4,
     price: 4.4,
-    title: "FourthProduct"
   },
   {
-    count: 5,
-    description: "Short Product Description5",
     id: "5555ec4b-b10c-48c5-9345-fc73c48a80a2",
+    description: "Short Product Description5",
+    title: "Rose",
+    sort: "missPiggi",
+    height: 70,
+    count: 5,
     price: 5.5,
-    title: "FifthProduct"
   },
   {
-    count: 6,
-    description: "Short Product Description6",
     id: "6666ec4b-b10c-48c5-9345-fc73c48a80a2",
+    description: "Short Product Description6",
+    title: "Rose",
+    sort: "redNaomi",
+    height: 70,
+    count: 6,
     price: 6.6,
-    title: "SixthProduct"
   },
   {
-    count: 7,
-    description: "Short Product Description7",
     id: "7777ec4b-b10c-48c5-9345-fc73c48a80a2",
+    description: "Short Product Description7",
+    title: "Rose",
+    sort: "vau",
+    height: 70,
+    count: 7,
     price: 7.7,
-    title: "SeventhProduct"
   },
 ];
