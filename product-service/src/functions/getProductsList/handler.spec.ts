@@ -2,10 +2,11 @@ import { mocked } from 'ts-jest/utils';
 import { Handler } from 'aws-lambda';
 
 import { middyfy } from '@libs/lambda';
+import { products } from '../../productsRange/products';
 
 jest.mock('@libs/lambda');
 
-describe('hello', () => {
+describe('getProductList', () => {
   let main;
   let mockedMiddyfy: jest.MockedFunction<typeof middyfy>;
 
@@ -22,16 +23,11 @@ describe('hello', () => {
     jest.resetModules();
   });
 
-  it('should return hello object', async () => {
+  it('should return list of products', async () => {
     const event = {
-      body: {
-        name: 'test-name'
-      }
-    } as any;
+      body: {}
+    };
     const actual = await main(event);
-    expect(actual).toEqual({
-      message: `Hello ${event.body.name}, welcome to the exciting Serverless world!`,
-      event,
-    });
+    expect(JSON.parse(actual.body)).toEqual(products);
   });
 });
