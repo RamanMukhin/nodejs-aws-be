@@ -3,7 +3,7 @@ import { Handler } from 'aws-lambda';
 
 import { middyfy } from '@libs/lambda';
 import { products } from '../../productsRange/products';
-import { StatusCodes } from 'http-status-codes';
+import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
 jest.mock('@libs/lambda');
 
@@ -24,12 +24,17 @@ describe('getProductList', () => {
     jest.resetModules();
   });
 
-  it('should return list of products', async () => {
-    const equalValue = JSON.stringify(products);
-    const statusCode = StatusCodes.OK;
+  it('should return product by ID', async () => {
+    const testId = "333w3ec4b-b10c-48c5-9345-fc73c48a80a2";
+    const testProduct = products.find((product) => product.id === testId);
+    const equalValue = JSON.stringify(testProduct ? testProduct : { message: getReasonPhrase(StatusCodes.NOT_FOUND) });
+    const statusCode = testProduct ? StatusCodes.OK : StatusCodes.NOT_FOUND;
 
     const event = {
-      body: {}
+      body: {},
+      pathParameters: {
+        productId: testId,
+      }
     };
 
     const actual = await main(event);
