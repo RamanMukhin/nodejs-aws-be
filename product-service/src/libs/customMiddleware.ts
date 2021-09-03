@@ -49,12 +49,13 @@ export const customMiddleware = (options: { enableErrorLogger?: boolean } = {}) 
 
     const existingKeys = Object.keys(request.response);
     const isHttpResponse = existingKeys.includes('statusCode')
-      && existingKeys.includes('body');
+      && existingKeys.includes('body')
+      && existingKeys.includes('headers');
 
     if (isHttpResponse) {
       return;
     }
-
+    
     request.response = formatJSONResponse(request.response);
   }
 

@@ -4,6 +4,7 @@
   },
   "body": "{}",
   "pathParameters": {
-    "productId": "100b3417-4e56-410a-bde5-6e2dd9f420b7"
-  }
+    "productId": "8e9ad1cb-9f93-46d5-beba-c2c930786f5f"
+  },
+  "httpMethod" : "get"
 }
