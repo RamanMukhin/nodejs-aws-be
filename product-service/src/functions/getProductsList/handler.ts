@@ -7,7 +7,8 @@ import schema from './schema';
 import { Client } from 'pg';
 import { dbOptions } from '../../common/dbOptions';
 
-const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (_event) => {
+const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+  console.log('Incoming event into getProductsList is:   ', event);
   const client = new Client(dbOptions);
   try {
     await client.connect();

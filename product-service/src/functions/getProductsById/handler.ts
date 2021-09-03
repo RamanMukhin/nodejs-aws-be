@@ -10,6 +10,7 @@ import { Client } from 'pg';
 import { dbOptions } from '../../common/dbOptions';
 
 const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+  console.log('Incoming event into getProductsById is:   ', event);
   const client = new Client(dbOptions);
   const { productId } = event.pathParameters;
 

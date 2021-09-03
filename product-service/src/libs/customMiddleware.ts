@@ -9,6 +9,7 @@ import MiddlewareFunction = middy.MiddlewareFunction;
 export const customMiddleware = (options: { enableErrorLogger?: boolean } = {}) => {
 
   const before: MiddlewareFunction<APIGatewayProxyEvent, any> = async (request) => {
+    console.log('Incoming request is:   ', request);
 
     if (request.event?.httpMethod !== 'post') {
       return;
@@ -55,7 +56,7 @@ export const customMiddleware = (options: { enableErrorLogger?: boolean } = {}) 
     if (isHttpResponse) {
       return;
     }
-    
+
     request.response = formatJSONResponse(request.response);
   }
 

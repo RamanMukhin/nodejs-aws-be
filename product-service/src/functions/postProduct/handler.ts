@@ -10,6 +10,7 @@ import { StatusCodes } from 'http-status-codes';
 import { dbOptions } from '../../common/dbOptions';
 
 const postProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+  console.log('Incoming event into postProduct is:   ', event);
   const client = new Client(dbOptions);
   const { description, title, sort, height, price, count } = event.body
 
