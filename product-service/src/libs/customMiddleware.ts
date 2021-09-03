@@ -10,6 +10,10 @@ export const customMiddleware = (options: { enableErrorLogger?: boolean } = {}) 
 
   const before: MiddlewareFunction<APIGatewayProxyEvent, any> = async (request) => {
 
+    if (request.event?.httpMethod !== 'post') {
+      return;
+    }
+
     const existingKeys = Object.keys(request.event.body);
     const isValide = existingKeys.includes('title')
       && existingKeys.includes('sort')
