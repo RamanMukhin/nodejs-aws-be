@@ -2,5 +2,5 @@
   "headers": {
     "Content-Type": "application/json"
   },
-  "body": "{\"description\": \"this product is..\",  \"title\": \"Rose\", \"sort\": \"mirna\", \"height\": 40, \"count\": 111, \"price\": 8.99}"
+  "body": "{\"description\": \"this product is..\", \"title\": \"Rose\", \"sort\": \"mirna\", \"height\": 40, \"count\": 111, \"price\": 8.99}"
 }
