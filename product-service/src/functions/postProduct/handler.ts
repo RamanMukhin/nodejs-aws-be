@@ -17,6 +17,7 @@ const postProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (ev
   try {
     await client.connect();
 
+    await client.query('BEGIN');
     const ifExists = await client.query(`select * from flowers where title = '${title}' and sort = '${sort}' and height = ${height} `);
     const existsProduct = ifExists.rows[0];
     if (existsProduct) throw new AppError('This product already exists', StatusCodes.BAD_REQUEST);
@@ -27,9 +28,13 @@ const postProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (ev
     await client.query(`insert into stock values ('${id}', ${count})`);
 
     const ifCreated = await client.query('select f.id, description, title, sort, height, price, count from flowers f join stock s on f.id = s.id where f.id = $1', [id]);
-    const newProduct = ifCreated.rows[0];
+    await client.query('COMMIT');
 
+    const newProduct = ifCreated.rows[0];
     return formatJSONResponse(newProduct, StatusCodes.CREATED);
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
   } finally {
     await client.end();
   }
