@@ -5,6 +5,7 @@ import { AppError } from '@libs/appError';
 import { middyfy } from '@libs/lambda';
 
 import schema from './schema';
+import { validate as isUuid } from 'uuid';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import { Client } from 'pg';
 import { dbOptions } from '../../common/dbOptions';
@@ -13,6 +14,10 @@ const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async
   console.log('Incoming event into getProductsById is:   ', event);
   const client = new Client(dbOptions);
   const { productId } = event.pathParameters;
+  
+  if (!isUuid(productId)) {
+    throw new AppError(getReasonPhrase(StatusCodes.BAD_REQUEST), StatusCodes.BAD_REQUEST);
+  }
 
   try {
     await client.connect();
