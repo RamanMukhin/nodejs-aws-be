@@ -6,7 +6,7 @@
 
 # How to test api
 
-To run all tests use
+To run all tests use 
 
 ```
 npm run test
