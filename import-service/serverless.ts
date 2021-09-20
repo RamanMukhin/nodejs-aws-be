@@ -17,6 +17,18 @@ const serverlessConfiguration: AWS = {
     runtime: 'nodejs14.x',
     stage: 'dev',
     region: 'eu-west-1',
+    iamRoleStatements: [
+      {
+        Effect: "Allow",
+        Action: "s3:GetObject",
+        Resource: `arn:aws:s3:::shop-import-service`,
+      },
+      {
+        Effect: "Allow",
+        Action: "s3:*",
+        Resource: `arn:aws:s3:::shop-import-service/*`,
+      }
+    ],
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -28,6 +40,7 @@ const serverlessConfiguration: AWS = {
   },
   // import the function via paths
   functions: { importProductsFile },
+  useDotenv: true,
 };
 
 module.exports = serverlessConfiguration;
