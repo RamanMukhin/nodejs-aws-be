@@ -1,17 +1,3 @@
-# Link for swagger documentation
-
-| WHAT TO DO | LINK |
-| ------ | ------ |
-| Click ----------> | [https://app.swaggerhub.com/apis-docs/nodejs_in_aws/task_3/1.0.0](https://app.swaggerhub.com/apis-docs/nodejs_in_aws/task_3/1.0.0) |
-
-# How to test api
-
-To run all tests use 
-
-```
-npm run test
-```
-
 # Serverless - AWS Node.js Typescript
 
 This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/).
@@ -106,4 +92,4 @@ The project code base is mainly located within the `src` folder. This folder is 
 
 ### Advanced usage
 
-Any tsconfig.json can be used, but if you do, set the environment variable `TS_NODE_CONFIG` for building the application, eg `TS_NODE_CONFIG=./tsconfig.app.json npx serverless webpack`
+Any tsconfig.json can be used, but if you do, set the environment variable `TS_NODE_CONFIG` for building the application, eg `TS_NODE_CONFIG=./tsconfig.app.json npx serverless webpack` 
