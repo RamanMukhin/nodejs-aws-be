@@ -27,8 +27,14 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<typeof schema> = as
   };
 
   const command = new PutObjectCommand(params);
-  const url = await getSignedUrl(client, command, { expiresIn: +EXPIRESIN });
-  return formatJSONResponse(url);
+  try {
+    const url = await getSignedUrl(client, command, { expiresIn: +EXPIRESIN });
+    return formatJSONResponse(url);
+  } catch (error) {
+    console.log('Getting URL ERROR IS:   ', error);
+  }
+
+  return formatJSONResponse('Error');
 }
 
 export const main = middyfy(importProductsFile);

@@ -39,6 +39,16 @@ const serverlessConfiguration: AWS = {
         Effect: "Allow",
         Action: "s3:*",
         Resource: ['arn:aws:s3:::${env:BUCKET}/*'],
+      },
+      {
+        Effect: "Allow",
+        Action: "sqs:*",
+        Resource: [{
+          'Fn::GetAtt': [
+            'SQSSimpleQueue',
+            'Arn',
+          ]
+        }],
       }
     ],
     apiGateway: {

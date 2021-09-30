@@ -3,13 +3,14 @@ import 'source-map-support/register';
 import { middyfy } from '@libs/lambda';
 import { formatJSONResponse } from '@libs/apiGateway';
 import { S3Client, GetObjectCommand, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import csv from 'csv-parser';
 
-const { BUCKET, REGION, FOLDER, FOLDER_TO } = process.env;
+const { BUCKET, REGION, FOLDER, FOLDER_TO, SQS_URL } = process.env;
 
 const importFileParser = async (event) => {
   console.log('Incoming event into importFileParser is:   ', event);
-  const client = new S3Client({ region: REGION });
+  const s3Client = new S3Client({ region: REGION });
 
   event.Records.forEach(async (element) => {
 
@@ -19,11 +20,27 @@ const importFileParser = async (event) => {
     };
 
     const getCommand = new GetObjectCommand(getParams);
-    const { Body } = await client.send(getCommand);
+    const { Body } = await s3Client.send(getCommand);
+
+    const sqsClient = new SQSClient({ region: REGION });
+
 
     Body.pipe(csv())
-      .on('data', (chunk) => {
+      .on('data', async (chunk) => {
         console.log('Incoming data is:   ', chunk);
+
+        const sendParams = {
+          QueueUrl: SQS_URL,
+          MessageBody: chunk
+        };
+
+        const sendCommand = new SendMessageCommand(sendParams);
+        try {
+          await sqsClient.send(sendCommand);
+        } catch (error) {
+          console.log('Sending in SQS ERROR IS:   ', error);
+        }
+
       })
       .on('end', async () => {
         console.log('There will be no more data. Now lets copy.');
@@ -35,10 +52,19 @@ const importFileParser = async (event) => {
         };
 
         const copyCommand = new CopyObjectCommand(copyParams);
-        await client.send(copyCommand);
+        try {
+          await s3Client.send(copyCommand);
+        } catch (error) {
+          console.log('Copying ERROR IS:   ', error);
+        }
+
 
         const deleteCommand = new DeleteObjectCommand(getParams);
-        await client.send(deleteCommand);
+        try {
+          await s3Client.send(deleteCommand);
+        } catch (error) {
+          console.log('Deleting ERROR IS:   ', error);
+        }
       });
 
     formatJSONResponse({ message: 'done' });

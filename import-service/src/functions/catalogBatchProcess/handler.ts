@@ -1,12 +1,11 @@
 import 'source-map-support/register';
 
-import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
 import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-import schema from './schema';
 
-const catalogBatchProcess: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+const catalogBatchProcess = async (event) => {
   console.log('Incoming event into catalogBatchProcess is:   ', event);
+  event.Records.map(data => console.log('Incoming message is   ', data.body));
   return formatJSONResponse('Soon');
 }
 
