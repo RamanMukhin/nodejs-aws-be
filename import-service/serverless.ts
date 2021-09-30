@@ -2,6 +2,7 @@ import type { AWS } from '@serverless/typescript';
 
 import importProductsFile from '@functions/importProductsFile';
 import importFileParser from '@functions/importFileParser';
+import catalogBatchProcess from '@functions/catalogBatchProcess';
 
 const serverlessConfiguration: AWS = {
   service: 'import-service',
@@ -13,6 +14,16 @@ const serverlessConfiguration: AWS = {
     },
   },
   plugins: ['serverless-webpack'],
+  resources: {
+    Resources: {
+      SQSSimpleQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'catalogItemsQueue',
+        },
+      },
+    },
+  },
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -22,12 +33,12 @@ const serverlessConfiguration: AWS = {
       {
         Effect: "Allow",
         Action: "s3:GetObject",
-        Resource: `arn:aws:s3:::shop-import-service`,
+        Resource: ['arn:aws:s3:::${env:BUCKET}'],
       },
       {
         Effect: "Allow",
         Action: "s3:*",
-        Resource: `arn:aws:s3:::shop-import-service/*`,
+        Resource: ['arn:aws:s3:::${env:BUCKET}/*'],
       }
     ],
     apiGateway: {
@@ -36,11 +47,23 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      PG_HOST: '${env:PG_HOST}',
+      PG_PORT: '${env:PG_PORT}',
+      PG_DB: '${env:PG_DB}',
+      PG_USER: '${env:PG_USER}',
+      PG_PASSWORD: '${env:PG_PASSWORD}',
+      BUCKET: '${env:BUCKET}',
+      REGION: '${env:REGION}',
+      EXPIRESIN: '${env:EXPIRESIN}',
+      FOLDER: '${env:FOLDER}',
+      SQS_URL: {
+        Ref: 'SQSSimpleQueue',
+      },
     },
     lambdaHashingVersion: '20201221',
   },
   // import the function via paths
-  functions: { importProductsFile, importFileParser },
+  functions: { importProductsFile, importFileParser, catalogBatchProcess },
   useDotenv: true,
 };
 

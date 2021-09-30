@@ -5,11 +5,11 @@ import { formatJSONResponse } from '@libs/apiGateway';
 import { S3Client, GetObjectCommand, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import csv from 'csv-parser';
 
-const BUCKET = 'shop-import-service';
+const { BUCKET, REGION, FOLDER, FOLDER_TO } = process.env;
 
 const importFileParser = async (event) => {
   console.log('Incoming event into importFileParser is:   ', event);
-  const client = new S3Client({ region: 'eu-west-1' });
+  const client = new S3Client({ region: REGION });
 
   event.Records.forEach(async (element) => {
 
@@ -31,7 +31,7 @@ const importFileParser = async (event) => {
         const copyParams = {
           Bucket: BUCKET,
           CopySource: BUCKET + '/' + element.s3.object.key,
-          Key: element.s3.object.key.replace('uploaded', 'parsed'),
+          Key: element.s3.object.key.replace(FOLDER, FOLDER_TO),
         };
 
         const copyCommand = new CopyObjectCommand(copyParams);
