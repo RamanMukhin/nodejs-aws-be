@@ -31,7 +31,7 @@ const importFileParser = async (event) => {
 
         const sendParams = {
           QueueUrl: SQS_URL,
-          MessageBody: chunk
+          MessageBody: JSON.stringify(chunk),
         };
 
         const sendCommand = new SendMessageCommand(sendParams);

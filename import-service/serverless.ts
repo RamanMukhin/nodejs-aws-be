@@ -2,7 +2,6 @@ import type { AWS } from '@serverless/typescript';
 
 import importProductsFile from '@functions/importProductsFile';
 import importFileParser from '@functions/importFileParser';
-import catalogBatchProcess from '@functions/catalogBatchProcess';
 
 const serverlessConfiguration: AWS = {
   service: 'import-service',
@@ -23,6 +22,20 @@ const serverlessConfiguration: AWS = {
         },
       },
     },
+    Outputs: {
+      SQSSimpleQueueArn: {
+        Description: 'import-service queue',
+        Value: {
+          'Fn::GetAtt': [
+            'SQSSimpleQueue',
+            'Arn',
+          ]
+        },
+        Export: {
+          Name: 'SQSArn'
+        }
+      }
+    }
   },
   provider: {
     name: 'aws',
@@ -31,13 +44,13 @@ const serverlessConfiguration: AWS = {
     region: 'eu-west-1',
     iamRoleStatements: [
       {
-        Effect: "Allow",
-        Action: "s3:GetObject",
+        Effect: 'Allow',
+        Action: 's3:GetObject',
         Resource: ['arn:aws:s3:::${env:BUCKET}'],
       },
       {
-        Effect: "Allow",
-        Action: "s3:*",
+        Effect: 'Allow',
+        Action: 's3:*',
         Resource: ['arn:aws:s3:::${env:BUCKET}/*'],
       },
       {
@@ -57,23 +70,20 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      PG_HOST: '${env:PG_HOST}',
-      PG_PORT: '${env:PG_PORT}',
-      PG_DB: '${env:PG_DB}',
-      PG_USER: '${env:PG_USER}',
-      PG_PASSWORD: '${env:PG_PASSWORD}',
       BUCKET: '${env:BUCKET}',
       REGION: '${env:REGION}',
       EXPIRESIN: '${env:EXPIRESIN}',
       FOLDER: '${env:FOLDER}',
+      FOLDER_TO: '${env:FOLDER_TO}',
       SQS_URL: {
         Ref: 'SQSSimpleQueue',
       },
     },
     lambdaHashingVersion: '20201221',
   },
+
   // import the function via paths
-  functions: { importProductsFile, importFileParser, catalogBatchProcess },
+  functions: { importProductsFile, importFileParser },
   useDotenv: true,
 };
 
