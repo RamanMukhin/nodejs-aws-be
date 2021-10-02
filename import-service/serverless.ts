@@ -20,6 +20,23 @@ const serverlessConfiguration: AWS = {
         Properties: {
           QueueName: 'catalogItemsQueue',
           ReceiveMessageWaitTimeSeconds: 20,
+          DelaySeconds: 1,
+        },
+      },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic',
+        },
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'kextcf2018@tut.by',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic'
+          }
         },
       },
     },
@@ -35,7 +52,16 @@ const serverlessConfiguration: AWS = {
         Export: {
           Name: 'SQSArn'
         }
-      }
+      },
+      SNSTopicArn: {
+        Description: 'import-service topic',
+        Value: {
+          Ref: 'SNSTopic'
+        },
+        Export: {
+          Name: 'SNSArn'
+        }
+      },
     }
   },
   provider: {
