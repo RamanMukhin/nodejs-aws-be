@@ -5,7 +5,7 @@ export default {
   events: [
     {
       sqs: {
-        BatchSize: 5,
+        batchSize: 5,
         arn: '${cf:import-service-dev.SQSSimpleQueueArn}'
       }
     }

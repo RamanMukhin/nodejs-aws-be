@@ -9,7 +9,7 @@ import MiddlewareFunction = middy.MiddlewareFunction;
 export const customMiddleware = (options: { enableErrorLogger?: boolean } = {}) => {
 
   const before: MiddlewareFunction<APIGatewayProxyEvent, any> = async (request) => {
-    console.log('Incoming request is:   ', request);
+    console.log('Incoming request/event to product-servise is:   ', request);
 
     if (request.event?.httpMethod !== 'post') {
       return;
