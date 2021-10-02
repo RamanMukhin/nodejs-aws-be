@@ -20,6 +20,13 @@ const serverlessConfiguration: AWS = {
     runtime: 'nodejs14.x',
     stage: 'dev',
     region: 'eu-west-1',
+    iamRoleStatements: [
+      {
+        Effect: "Allow",
+        Action: "sns:*",
+        Resource: '${cf:import-service-dev.SNSTopicArn}',
+      },
+    ],
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -31,6 +38,8 @@ const serverlessConfiguration: AWS = {
       PG_DB: '${env:PG_DB}',
       PG_USER: '${env:PG_USER}',
       PG_PASSWORD: '${env:PG_PASSWORD}',
+      REGION: '${env:REGION}',
+      SNS_ARN: '${cf:import-service-dev.SNSTopicArn}',
     },
     lambdaHashingVersion: '20201221',
   },

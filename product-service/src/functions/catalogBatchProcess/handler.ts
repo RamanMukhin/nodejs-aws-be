@@ -4,6 +4,9 @@ import { middyfy } from '@libs/lambda';
 
 import { Client } from 'pg';
 import { dbOptions } from '../../common/dbOptions';
+import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
+
+const { REGION, SNS_ARN } = process.env;
 
 const catalogBatchProcess = async (event) => {
   console.log('Incoming event into catalogBatchProcess is:   ', event);
@@ -37,6 +40,24 @@ const catalogBatchProcess = async (event) => {
 
       const newFlower = ifCreated.rows[0];
       console.log('New created flower is   :', newFlower);
+
+
+      const snsClient = new SNSClient({ region: REGION });
+
+      const publishParams = {
+        TopicArn: SNS_ARN,
+        Subject: 'Created products on product-service at AWS',
+        Message: 'The following product was created and saved to the database: \n' + JSON.stringify(newFlower),
+      };
+
+      const publishCommand = new PublishCommand(publishParams);
+
+      try {
+        await snsClient.send(publishCommand);
+      } catch (error) {
+        console.log('Sending in SNS ERROR IS:   ', error);
+      }
+
     } catch (err) {
       await client.query('ROLLBACK');
       console.log('The following error occurred while creating the flower:   ', err);
