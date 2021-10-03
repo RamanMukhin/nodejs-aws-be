@@ -27,6 +27,33 @@ const catalogBatchProcess = async (event) => {
       const existsProduct = ifExists.rows[0];
       if (existsProduct) {
         console.log('This product already exists:   ', existsProduct);
+
+        const snsClient = new SNSClient({ region: REGION });
+
+        const publishParams = {
+          TopicArn: SNS_ARN,
+          Subject: 'NOT created products on product-service at AWS',
+          Message: 'The following product is already exists: \n' + JSON.stringify(existsProduct),
+          MessageAttributes: {
+            alreadyExists: {
+              DataType: 'String',
+              StringValue: 'true',
+            },
+            price: {
+              DataType: 'Number',
+              StringValue: String(existsProduct.price),
+            },
+          },
+        };
+
+        const publishCommand = new PublishCommand(publishParams);
+
+        try {
+          await snsClient.send(publishCommand);
+        } catch (error) {
+          console.log('Sending in SNS ERROR IS:   ', error);
+        }
+
         return;
       };
 
@@ -48,6 +75,12 @@ const catalogBatchProcess = async (event) => {
         TopicArn: SNS_ARN,
         Subject: 'Created products on product-service at AWS',
         Message: 'The following product was created and saved to the database: \n' + JSON.stringify(newFlower),
+        MessageAttributes: {
+          price: {
+            DataType: 'Number',
+            StringValue: String(newFlower.price),
+          },
+        },
       };
 
       const publishCommand = new PublishCommand(publishParams);

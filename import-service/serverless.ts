@@ -36,7 +36,23 @@ const serverlessConfiguration: AWS = {
           Protocol: 'email',
           TopicArn: {
             Ref: 'SNSTopic'
-          }
+          },
+          FilterPolicy: {
+            price: [{ 'numeric': ["<=", 1000] }],
+          },
+        },
+      },
+      SNSSubscriptionFailed: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'bolzan.valeria@yandex.ru',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic'
+          },
+          FilterPolicy: {
+            alreadyExists: [{ 'exists': true }],
+          },
         },
       },
     },
