@@ -1,10 +1,12 @@
 import { mocked } from 'ts-jest/utils';
 import { Handler } from 'aws-lambda';
+import dotenv from 'dotenv'
 
 import { middyfy } from '@libs/lambda';
 import { StatusCodes } from 'http-status-codes';
 
 jest.mock('@libs/lambda');
+dotenv.config();
 
 describe('importProductsFile', () => {
   let main;

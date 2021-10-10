@@ -7,8 +7,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import schema from './schema';
 
-const EXPIRESIN = 60;
-const BUCKET = 'shop-import-service';
+const { BUCKET, EXPIRESIN, REGION, FOLDER } = process.env;
 
 const importProductsFile: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   console.log('Incoming event into importProductsFile is:   ', event);
@@ -18,8 +17,8 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<typeof schema> = as
     url: 'No URL',
   });
 
-  const filePath = `uploaded/${fileName}`;
-  const client = new S3Client({ region: 'eu-west-1' });
+  const filePath = `${FOLDER}/${fileName}`;
+  const client = new S3Client({ region: REGION });
 
   const params = {
     Bucket: BUCKET,
@@ -28,8 +27,14 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<typeof schema> = as
   };
 
   const command = new PutObjectCommand(params);
-  const url = await getSignedUrl(client, command, { expiresIn: EXPIRESIN });
-  return formatJSONResponse(url);
+  try {
+    const url = await getSignedUrl(client, command, { expiresIn: +EXPIRESIN });
+    return formatJSONResponse(url);
+  } catch (error) {
+    console.log('Getting URL ERROR IS:   ', error);
+  }
+
+  return formatJSONResponse('Error');
 }
 
 export const main = middyfy(importProductsFile);
