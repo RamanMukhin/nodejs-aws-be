@@ -1,19 +1,14 @@
 import 'source-map-support/register';
 
-import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-import { APIGatewayAuthorizerEvent, PolicyDocument } from 'aws-lambda';
+import { APIGatewayAuthorizerEvent, Context, Callback, PolicyDocument } from 'aws-lambda';
 
-import { getReasonPhrase, StatusCodes } from 'http-status-codes';
-
-const basicAuthorizer = async (event: APIGatewayAuthorizerEvent) => {
+const basicAuthorizer = async (event: APIGatewayAuthorizerEvent, _context: Context, callback: Callback) => {
   console.log('Incoming event into basicAuthorizer is:   ', JSON.stringify(event));
 
   const { type } = event;
   if (type !== 'TOKEN') {
-    return formatJSONResponse({
-      message: getReasonPhrase(StatusCodes.UNAUTHORIZED),
-    }, StatusCodes.UNAUTHORIZED);
+    return callback('Unauthorized');
   };
 
   try {
@@ -31,15 +26,13 @@ const basicAuthorizer = async (event: APIGatewayAuthorizerEvent) => {
 
     console.log('Policy is:   ', JSON.stringify(policy));
 
-    return formatJSONResponse({
+    return callback(null, {
       principalId: encodedCreds,
       policyDocument: policy
     });
   } catch (err) {
     console.log('Error is:   ', JSON.stringify(err));
-    return formatJSONResponse({
-      message: getReasonPhrase(StatusCodes.UNAUTHORIZED),
-    }, StatusCodes.UNAUTHORIZED);
+    return callback('Unauthorized');
   }
 }
 
@@ -53,7 +46,6 @@ const generatePolicy = (effect: string, resource: string): PolicyDocument => {
         Resource: resource,
       }
     ]
-
   }
 }
 

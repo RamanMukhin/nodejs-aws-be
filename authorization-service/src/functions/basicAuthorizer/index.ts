@@ -8,13 +8,6 @@ export default {
         method: 'get',
         path: 'basicAuthorizer',
         cors: true,
-        request: {
-          parameters: {
-            headers: {
-              Authorization: true
-            }
-          }
-        }
       }
     }
   ]
