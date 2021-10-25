@@ -15,6 +15,36 @@ const serverlessConfiguration: AWS = {
     },
   },
   plugins: ['serverless-webpack'],
+  resources: {
+    Resources: {
+      GatewayResponseDefault5XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseType: 'DEFAULT_5XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi'
+          },
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'"
+          }
+        }
+      },
+      GatewayResponseDefault4XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi'
+          },
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'"
+          }
+        }
+      },
+    },
+  },
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
