@@ -32,7 +32,7 @@ app.all('/*', async (req, res) => {
     try {
       const result = await axios(axiosConfig);
       console.log(`${service}-service RESPONSE is:   `, result.data);
-      res.json(result.data);
+      res.status(result.status).json(result.data);
     } catch (err) {
       console.log('Error is:   ', JSON.stringify(err));
       if (err.response) {
