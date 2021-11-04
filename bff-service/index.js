@@ -4,6 +4,8 @@ import axios from 'axios';
 
 dotenv.config();
 
+let cache;
+
 const port = process.env.PORT || 3000;
 
 const app = express();
@@ -30,9 +32,22 @@ app.all('/*', async (req, res) => {
     console.log('AXIOS_CONFIG is:   ', axiosConfig);
 
     try {
-      const result = await axios(axiosConfig);
-      console.log(`${service}-service RESPONSE is:   `, result.data);
-      res.status(result.status).json(result.data);
+      if (req.method === 'GET' && !req.originalUrl.split('/')[2] && cache) {
+        console.log('RESPONSE FROM CASHE');
+        res.status(cache.status).json(cache.data);
+      } else {
+        const result = await axios(axiosConfig);
+        console.log(`${service}-service RESPONSE is:   `, result.data);
+
+        if (req.method === 'GET' && !req.originalUrl.split('/')[2]) {
+          cache = {};
+          cache.data = result.data;
+          cache.status = result.status;
+          setTimeout(() => cache = undefined, 120000);
+        }
+
+        res.status(result.status).json(result.data);
+      }
     } catch (err) {
       console.log('Error is:   ', JSON.stringify(err));
       if (err.response) {
