@@ -36,7 +36,7 @@ const basicAuthorizer = async (event: APIGatewayAuthorizerEvent, _context: Conte
   }
 }
 
-const generatePolicy = (effect: string, resource: string): PolicyDocument => {
+const generatePolicy = (effect: 'Deny' | 'Allow', resource: string): PolicyDocument => {
   return {
     Version: '2012-10-17',
     Statement: [
